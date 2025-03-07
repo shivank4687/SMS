@@ -43,7 +43,7 @@ const dataSourceConfig={
   // Initialize the database before TypeORM connects
 //   await ensureDatabaseExists();
 const dataSource = new DataSource(dataSourceConfig);
-dataSource.initialize()
-  .then(() => console.log("Database Connected"))
-  .catch((error) => console.error("Error connecting to database", error));
+// dataSource.initialize()
+//   .then(() => console.log("Database Connected"))
+//   .catch((error) => console.error("Error connecting to database", error));
 export default dataSource;

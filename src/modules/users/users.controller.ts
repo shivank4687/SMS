@@ -4,10 +4,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/database/entities/user.entity';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+// import { AuthGuard } from 'src/common/guards/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import * as bcrypt from 'bcrypt';
+import { Roles } from 'src/common/decorators/roles.decorator';
+
 
 @ApiTags('users')
-@UseGuards(AuthGuard)
+
+// @UseGuards(RolesGuard)
+// @UseGuards(AuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -15,7 +21,9 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Successful retrieval of users', type: [User] })
+  @Roles('admin')
   findAll() {
+    
     return this.usersService.findAll();
   }
 
@@ -24,6 +32,7 @@ export class UsersController {
   @ApiParam({ name: 'id', required: true, description: 'ID of the user' })
   @ApiResponse({ status: 200, description: 'User found', type: User })
   @ApiResponse({ status: 404, description: 'User not found' })
+  // @Roles('admin')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -34,6 +43,9 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'User created successfully', type: User })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   create(@Body() createUserDto: CreateUserDto) {
+    // const saltRounds = 10;
+    // const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // const isMatch = await bcrypt.compare(plainTextPassword, hashedPassword);
     return this.usersService.create(createUserDto);
   }
 

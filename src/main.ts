@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import { AppLogger } from './common/services/logger/logger.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './common/interceptors/response.interceptor';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 const config = new DocumentBuilder()
     .setTitle('My API')
     .setDescription('API documentation for My Project')
@@ -21,12 +23,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
   
-  app.setGlobalPrefix('api/v1');
-
+  // app.setGlobalPrefix('api/v1');
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // app.useGlobalInterceptors(new TransformInterceptor());
 
+  // app.useGlobalFilters(new HttpExceptionFilter(),new AllExceptionsFilter()); for orderwise execution of filters
+  
   // app.useGlobalFilters(new HttpExceptionFilter());
+  
   
 
   // app.enableCors({
@@ -38,6 +43,7 @@ async function bootstrap() {
   // const logger = app.get(AppLogger);
   // app.useLogger(logger); 
   // app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
